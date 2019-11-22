@@ -7,13 +7,14 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Stijn Van Hoey" />
 <meta name="author" content="Peter Desmet" />
 <meta name="author" content="Thierry Onkelinx" />
 
-<meta name="date" content="2018-05-07" />
+<meta name="date" content="2019-11-22" />
 
 <title>Git hands-on session within RStudio</title>
 
@@ -31,7 +32,8 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -78,11 +80,9 @@ h6 {
 }
 </style>
 
-<link rel="stylesheet" href="static\css\inbo.css" type="text/css" />
+<link rel="stylesheet" href="static/css/inbo.css" type="text/css" />
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -96,13 +96,18 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
@@ -118,7 +123,6 @@ body {
   padding-top: 50px;
   margin-top: -50px;
 }
-
 .section h2 {
   padding-top: 50px;
   margin-top: -50px;
@@ -138,6 +142,43 @@ body {
 .section h6 {
   padding-top: 50px;
   margin-top: -50px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -159,47 +200,65 @@ $(document).ready(function () {
 });
 </script>
 
-
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
-
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -213,6 +272,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -248,8 +313,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -258,6 +321,16 @@ div.tocify {
 
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -328,10 +401,10 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Git hands-on session within RStudio</h1>
-<h4 class="author"><em>Stijn Van Hoey</em></h4>
-<h4 class="author"><em>Peter Desmet</em></h4>
-<h4 class="author"><em>Thierry Onkelinx</em></h4>
-<h4 class="date"><em>2018-05-07</em></h4>
+<h4 class="author">Stijn Van Hoey</h4>
+<h4 class="author">Peter Desmet</h4>
+<h4 class="author">Thierry Onkelinx</h4>
+<h4 class="date">2019-11-22</h4>
 
 </div>
 
@@ -422,11 +495,13 @@ Exercise:
 </h4>
 <ol style="list-style-type: decimal">
 <li>Go to <code>Tools &gt; Shell</code> to open the Git Shell</li>
-<li><p>In the shell, type the following command and enter:</p>
-<pre><code>git config --global user.name &quot;mygithubusername&quot;</code></pre></li>
-<li><p>Still in the shell, type the following command and enter:</p>
-<pre><code>git config --global user.email &quot;my.name@inbo.be&quot;</code></pre></li>
+<li>In the shell, type the following command and enter:</li>
 </ol>
+<pre><code>git config --global user.name &quot;mygithubusername&quot;</code></pre>
+<ol style="list-style-type: decimal">
+<li>Still in the shell, type the following command and enter:</li>
+</ol>
+<pre><code>git config --global user.email &quot;my.name@inbo.be&quot;</code></pre>
 </div>
 <hr />
 <p><img src="static/images/Rstudio-GitShell.png" alt="RStudio setup git shell" style="width:75.0%" /></p>
@@ -666,13 +741,13 @@ Exercise:
 </h4>
 <ol style="list-style-type: decimal">
 <li><p>Open <code>README.md</code> in RStudio:</p>
-<pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
-A simple analysis to visualize my favourite fruit colour.
-=======
-A simple analysis to discover my favourite fruit color.
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</code></pre></li>
+<pre><code> &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+ A simple analysis to visualize my favourite fruit colour.
+ =======
+ A simple analysis to discover my favourite fruit color.
+ &gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</code></pre></li>
 <li><p>Choose what you want to keep and only keep that code in the file:</p>
-<pre><code>A simple analysis to discover my favourite fruit colour.</code></pre></li>
+<pre><code> A simple analysis to discover my favourite fruit colour.</code></pre></li>
 <li>Commit the adaptation with a commit message</li>
 <li>Click <code>Push</code> to update GitHub</li>
 </ol>
@@ -782,10 +857,9 @@ Shell based approach to create a new branch:
 </h4>
 <ol style="list-style-type: decimal">
 <li>Open the git shell</li>
-<li><p>Create a branch by a <code>checkout</code> to new <code>branch</code>:</p>
-<pre><code>git checkout -b analysis-script</code></pre></li>
+<li>Create a branch by a <code>checkout</code> to new <code>branch</code>: <code>git checkout -b analysis-script</code></li>
 <li>Get an overview of your branches: <code>git branch</code></li>
-<li><p>Type <code>git push -u origin analysis-script</code> to activate <code>Push</code>/<code>Pull</code> buttons</p></li>
+<li>Type <code>git push -u origin analysis-script</code> to activate <code>Push</code>/<code>Pull</code> buttons</li>
 </ol>
 <p>Shell based approach to create a new branch: <img src="static/images/create-branch-rstudio.png" alt="Create branch" style="width:75.0%" /></p>
 <p>This will also activate the <code>pull</code> and <code>push</code> buttons. From now on, you can commit as many times as you want/need to this branch and push the commits to GitHub, where it will be stored under the same branch name:</p>
@@ -884,8 +958,7 @@ Exercise:
 <ol style="list-style-type: decimal">
 <li>In Rstudio, switch to the <code>master</code> branch (right top in <code>Git</code> pane)</li>
 <li>Click <code>Pull</code></li>
-<li><p>Remove the local branch as well (otherwise you will have a lot of them after a while). You need to open the Shell:</p>
-<pre><code>git branch -d analysis-script</code></pre></li>
+<li>Remove the local branch as well (otherwise you will have a lot of them after a while). You need to open the Shell: <code>git branch -d analysis-script</code></li>
 </ol>
 </div>
 <p><img src="static/images/pull-rstudio.png" alt="git pull" style="width:75.0%" /></p>
@@ -1043,6 +1116,49 @@ $(document).ready(function () {
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
